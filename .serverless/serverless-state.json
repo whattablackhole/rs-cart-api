@@ -15,25 +15,6 @@
         "PG_USERNAME": "postgres",
         "PG_PASSWORD": "pq0#u#M76w86"
       },
-      "iamRoleStatements": [
-        {
-          "Effect": "Allow",
-          "Action": [
-            "rds:*"
-          ],
-          "Resource": "*"
-        }
-      ],
-      "vpc": {
-        "securityGroupIds": [
-          "sg-00534af14e86e4668"
-        ],
-        "subnetIds": [
-          "subnet-0657b98828de60641",
-          "subnet-0020eb03061e8d31f",
-          "subnet-01fa08627131b9fa9"
-        ]
-      },
       "stage": "dev",
       "versionFunctions": true,
       "compiledCloudFormationTemplate": {
@@ -112,7 +93,7 @@
           "MainLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/serverless-example-dev-main"
+              "LogGroupName": "/aws/lambda/serverless-example-prod-main"
             }
           },
           "IamRoleLambdaExecution": {
@@ -141,7 +122,7 @@
                       "-",
                       [
                         "serverless-example",
-                        "dev",
+                        "prod",
                         "lambda"
                       ]
                     ]
@@ -157,7 +138,7 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-example-dev*:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-example-prod*:*"
                           }
                         ]
                       },
@@ -168,12 +149,9 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-example-dev*:*:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-example-prod*:*:*"
                           }
                         ]
-                      },
-                      {
-                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][0]"
                       }
                     ]
                   }
@@ -185,28 +163,14 @@
                   "-",
                   [
                     "serverless-example",
-                    "dev",
+                    "prod",
                     {
                       "Ref": "AWS::Region"
                     },
                     "lambdaRole"
                   ]
                 ]
-              },
-              "ManagedPolicyArns": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-                    ]
-                  ]
-                }
-              ]
+              }
             }
           },
           "MainLambdaFunction": {
@@ -216,11 +180,11 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-example/dev/1667167690911-2022-10-30T22:08:10.911Z/serverless-example.zip"
+                "S3Key": "serverless/serverless-example/prod/1667171492605-2022-10-30T23:11:32.605Z/serverless-example.zip"
               },
               "Handler": "dist/main.handler",
               "Runtime": "nodejs14.x",
-              "FunctionName": "serverless-example-dev-main",
+              "FunctionName": "serverless-example-prod-main",
               "MemorySize": 1024,
               "Timeout": 6,
               "Environment": {
@@ -237,34 +201,26 @@
                   "IamRoleLambdaExecution",
                   "Arn"
                 ]
-              },
-              "VpcConfig": {
-                "SecurityGroupIds": {
-                  "$ref": "$[\"service\"][\"provider\"][\"vpc\"][\"securityGroupIds\"]"
-                },
-                "SubnetIds": {
-                  "$ref": "$[\"service\"][\"provider\"][\"vpc\"][\"subnetIds\"]"
-                }
               }
             },
             "DependsOn": [
               "MainLogGroup"
             ]
           },
-          "MainLambdaVersionhpZkTjgsvhfCYrOK8fhxCbAM5qWoxsAWNuYXTRRcE": {
+          "MainLambdaVersionUc5xDVnvDNaQb4i9KYyObG7fEQcMWNVmrsdneKETI": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "MainLambdaFunction"
               },
-              "CodeSha256": "JHdzmptLMwE4g5LKsK2jr9zC7lbh+y2uL4C1StEYQMY="
+              "CodeSha256": "FzkqeNMG748kEnQYaoFD0TYeTjK9+oMFSLE86efrCaE="
             }
           },
           "ApiGatewayRestApi": {
             "Type": "AWS::ApiGateway::RestApi",
             "Properties": {
-              "Name": "dev-serverless-example",
+              "Name": "prod-serverless-example",
               "EndpointConfiguration": {
                 "Types": [
                   "EDGE"
@@ -383,13 +339,13 @@
               "MainLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1667167598724": {
+          "ApiGatewayDeployment1667171396057": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               },
-              "StageName": "dev"
+              "StageName": "prod"
             },
             "DependsOn": [
               "ApiGatewayMethodAny",
@@ -440,16 +396,16 @@
               "Ref": "ServerlessDeploymentBucket"
             },
             "Export": {
-              "Name": "sls-serverless-example-dev-ServerlessDeploymentBucketName"
+              "Name": "sls-serverless-example-prod-ServerlessDeploymentBucketName"
             }
           },
           "MainLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "MainLambdaVersionhpZkTjgsvhfCYrOK8fhxCbAM5qWoxsAWNuYXTRRcE"
+              "Ref": "MainLambdaVersionUc5xDVnvDNaQb4i9KYyObG7fEQcMWNVmrsdneKETI"
             },
             "Export": {
-              "Name": "sls-serverless-example-dev-MainLambdaFunctionQualifiedArn"
+              "Name": "sls-serverless-example-prod-MainLambdaFunctionQualifiedArn"
             }
           },
           "ServiceEndpoint": {
@@ -470,12 +426,12 @@
                   {
                     "Ref": "AWS::URLSuffix"
                   },
-                  "/dev"
+                  "/prod"
                 ]
               ]
             },
             "Export": {
-              "Name": "sls-serverless-example-dev-ServiceEndpoint"
+              "Name": "sls-serverless-example-prod-ServiceEndpoint"
             }
           }
         }
@@ -561,7 +517,8 @@
             }
           }
         }
-      }
+      },
+      "vpc": {}
     },
     "plugins": [
       "serverless-offline"
@@ -586,13 +543,13 @@
             }
           }
         ],
-        "name": "serverless-example-dev-main",
+        "name": "serverless-example-prod-main",
         "package": {},
         "memory": 1024,
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "MainLambdaVersionhpZkTjgsvhfCYrOK8fhxCbAM5qWoxsAWNuYXTRRcE"
+        "versionLogicalId": "MainLambdaVersionUc5xDVnvDNaQb4i9KYyObG7fEQcMWNVmrsdneKETI"
       }
     },
     "configValidationMode": "warn",
@@ -615,7 +572,7 @@
     "artifact": "C:\\Users\\Rudolf_Hrytseniak\\cart-service\\rs-cart-api\\.serverless\\serverless-example.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/serverless-example/dev/1667167690911-2022-10-30T22:08:10.911Z",
+    "artifactDirectoryName": "serverless/serverless-example/prod/1667171492605-2022-10-30T23:11:32.605Z",
     "artifact": "serverless-example.zip"
   }
 }

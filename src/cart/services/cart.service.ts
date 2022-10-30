@@ -4,7 +4,6 @@ import { Cart, CartItem, Product } from '../models';
 import { Client } from 'pg';
 import { DB_OPTIONS } from 'src/constants';
 import axios from 'axios';
-import moment from 'moment';
 @Injectable()
 export class CartService {
   async findByUserId(userId: string): Promise<Cart> {
@@ -46,8 +45,8 @@ export class CartService {
       await client.query(`
       insert into carts (id, created_at, updated_at) values
       (
-        '${userId}', '${moment().format('YYYY-MM-DD')}',
-        '${moment().format('YYYY-MM-DD')}' 
+        '${userId}', '${this.getDate()}',
+        '${this.getDate()}' 
       )
       `);
 
@@ -107,7 +106,7 @@ export class CartService {
       if (result) {
         const query = `
         UPDATE carts
-        SET updated_at = '${moment().format('YYYY-MM-DD')}'
+        SET updated_at = '${this.getDate()}'
         WHERE carts.id = '${id}';
         `;
         await client.query(query);
@@ -133,5 +132,15 @@ export class CartService {
     } finally {
       client.end();
     }
+  }
+  getDate() {
+    const d = new Date();
+    const year = d.getFullYear();
+    let month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
   }
 }

@@ -15,18 +15,6 @@ provider:
     PG_DATABASE: rs_aws_shop_db
     PG_USERNAME: postgres
     PG_PASSWORD: pq0#u#M76w86
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action:
-        - "rds:*"
-      Resource: "*"
-  vpc:
-    securityGroupIds:
-      - sg-00534af14e86e4668
-    subnetIds:
-      - subnet-0657b98828de60641
-      - subnet-0020eb03061e8d31f
-      - subnet-01fa08627131b9fa9
 functions:
   main:
     handler: dist/main.handler

@@ -62,7 +62,6 @@
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-import": "^2.20.1",
     "jest": "26.4.2",
-    "moment": "^2.29.4",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.2",
     "serverless-offline": "^11.2.1",
