@@ -33,7 +33,7 @@ export class CartService {
         id: userId,
       };
     } catch (err) {
-      console.log('findByUserId:', err);
+      console.log(err);
     } finally {
       client.end();
     }
@@ -74,7 +74,6 @@ export class CartService {
   }
 
   async updateByUserId(userId: string, { items }: any): Promise<any> {
-    console.log(items);
     const { id, ...rest } = await this.findOrCreateByUserId(userId);
     const client = new Client(DB_OPTIONS);
 
@@ -92,7 +91,6 @@ export class CartService {
       ON CONFLICT (product_id) DO UPDATE 
         SET count = excluded.count;
     `;
-    console.log(updateQuery);
     try {
       await client.connect();
       let result = await client.query(updateQuery);
@@ -111,7 +109,6 @@ export class CartService {
         `;
         await client.query(query);
       }
-      console.log('r', result);
       return await this.findOrCreateByUserId(userId);
     } catch (err) {
       console.log(err);
@@ -125,6 +122,7 @@ export class CartService {
     try {
       await client.connect();
       await client.query(`
+      DELETE FROM cart_items WHERE cart_items.cart_id = '${userId}';
       DELETE FROM carts WHERE carts.id = '${userId}';
       `);
     } catch (err) {
