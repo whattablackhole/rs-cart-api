@@ -12,21 +12,28 @@ export class CartService {
       await client.connect();
       const cart = await client.query(`
       select id, product_id, count from carts
-  	  inner join cart_items
+  	  left join cart_items
   	  on carts.id = cart_items.cart_id
-      where cart_id = '${userId}'
+      where carts.id = '${userId}'
       `);
+
+      if (!cart.rows.length) {
+        return undefined;
+      }
+
       const products: CartItem[] = await Promise.all(
-        cart.rows.map(async row => {
-          return {
-            product: (
-              await axios.get(
-                `https://skx597wlr6.execute-api.eu-west-1.amazonaws.com/dev/products/${row.product_id}`,
-              )
-            ).data as Product,
-            count: row.count as number,
-          } as CartItem;
-        }),
+        cart.rows
+          .filter(r => r.product_id)
+          .map(async row => {
+            return {
+              product: (
+                await axios.get(
+                  `https://skx597wlr6.execute-api.eu-west-1.amazonaws.com/dev/products/${row.product_id}`,
+                )
+              ).data as Product,
+              count: row.count as number,
+            } as CartItem;
+          }),
       );
       return {
         items: products,
@@ -41,7 +48,7 @@ export class CartService {
   async createByUserId(userId: string) {
     const client = new Client(DB_OPTIONS);
     try {
-      client.connect();
+      await client.connect();
       await client.query(`
       insert into carts (id, created_at, updated_at) values
       (
