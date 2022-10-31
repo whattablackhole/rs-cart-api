@@ -92,9 +92,7 @@ export class CartService {
 
     const updateQuery = `
     INSERT into cart_items (cart_id, product_id, count) values
-    (
-      ${items.map(i => `'${id}', '${i.product.id}', ${i.count}`).join(',')}
-    )
+      ${items.map(i => `('${id}', '${i.product.id}', ${i.count})`).join(',')}
       ON CONFLICT (product_id) DO UPDATE 
         SET count = excluded.count;
     `;
