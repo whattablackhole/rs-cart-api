@@ -7,7 +7,6 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
