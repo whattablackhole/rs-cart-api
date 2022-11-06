@@ -14,8 +14,8 @@ RUN npm run build && npm ci --only=production && npm cache clean --force
 
 # create new stage to copy optized files which only required for project to be run
 FROM node:18-alpine
-COPY --from=build ./node_modules ./node_modules
-COPY --from=build ./dist ./dist
+COPY --from=build ./app/node_modules ./node_modules
+COPY --from=build ./app/dist ./dist
 USER node
 EXPOSE 4000
 CMD [ "node", "dist/main.js" ]
