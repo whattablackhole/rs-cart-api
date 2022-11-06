@@ -1,0 +1,5 @@
+# docker will ignore these on transfering context process - it will deacrease build time and deacrese image size if there is no multi-stage strategy
+# also they might conflict when docker copy these folders into new stage as on new stage these folders will be exist from start
+
+node_modules
+dist

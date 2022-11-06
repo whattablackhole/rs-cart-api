@@ -1,14 +1,12 @@
-import { env } from 'process';
-
 export const JWT_CONFIG = {
   secret: 'secret',
   expiresIn: '12h',
 };
 
 export const DB_OPTIONS = {
-  database: env.PG_DATABASE,
-  host: env.PG_HOST,
-  port: parseInt(env.PG_PORT),
-  user: env.PG_USERNAME,
-  password: env.PG_PASSWORD,
+  database: 'rs_aws_shop_db',
+  host: 'database-1.cacnfeqizyon.eu-west-1.rds.amazonaws.com',
+  port: 5432,
+  user: 'postgres',
+  password: 'pq0#u#M76w86',
 };

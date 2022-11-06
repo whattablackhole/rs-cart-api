@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Cart, CartItem, Product } from '../models';
 
 import { Client } from 'pg';
-import { DB_OPTIONS } from 'src/constants';
+import { DB_OPTIONS } from '../../constants';
 import axios from 'axios';
 @Injectable()
 export class CartService {
